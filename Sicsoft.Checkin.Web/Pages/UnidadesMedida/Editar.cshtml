@@ -1,0 +1,64 @@
+﻿@page "{id}"
+@model FacturaElectronica.Pages.UnidadesMedida.EditarModel
+@{
+    ViewData["Title"] = "Editar Unidad de Medida";
+}
+
+@section styles{
+
+
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Editar Unidad de Medida</h3>
+    </div>
+
+    <div class="title_right">
+
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="cyber">Código CyberFuel:</label>
+                            <input type="text" id="cyber" class="form-control" asp-for="Unidad.codCyber" readonly />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="sap">Código SAP:</label>
+                            <input type="text" id="sap" class="form-control" asp-for="Unidad.codSAP" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="nom">Nombre:</label>
+                            <input type="text" id="nom" class="form-control" asp-for="Unidad.Nombre" required />
+                        </div>
+
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.IO;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.Extensions.Configuration;
+@using Refit;
+@using Sicsoft.Checkin.Web.Models;
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
+}
+
+ 
+
+<div class="left_col scroll-view">
+    <div class="navbar nav_title" style="border: 0;">
+        <a asp-page="/Index" class="site_title" style="font-size: 19px;"> <span>Facturación Electrónica</span></a>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <!-- menu profile quick info -->
+    <div class="profile clearfix">
+   
+        <div class="profile_info">
+            <span>Bienvenido,</span>
+            <h2>@(((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == ClaimTypes.Name).Select(s1 => s1.Value).FirstOrDefault())</h2>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <!-- /menu profile quick info -->
+
+    <br />
+
+    <!-- sidebar menu -->
+    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+        <div class="menu_section">
+            <h3>General</h3>
+            <ul class="nav side-menu">
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "1").FirstOrDefault()))
+                        {
+                            <a asp-page="/Usuarios/Index"><i class="fa fa-users"></i> Usuarios </a>
+                        }
+
+                    }
+
+
+                </li>
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "6").FirstOrDefault()))
+                        {
+                            <a asp-page="/CorreosRecepcion/Index"><i class="fa fa-envelope"></i> Correos Recepción </a>
+                        }
+
+                    }
+                </li>
+
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "10").FirstOrDefault()))
+                        {
+                            <a asp-page="/UnidadesMedida/Index"><i class="fa fa-flask"></i> Unidades de Medida </a>
+                        }
+
+                    }
+                </li>
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "13").FirstOrDefault()))
+                        {
+                            <a asp-page="/CondicionesVentas/Index"><i class="fa fa-money"></i> Condiciones de Venta </a>
+                        }
+
+                    }
+                </li>
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "9").FirstOrDefault()))
+                        {
+                            <a asp-page="/Parametros/Index"><i class="fa fa-wrench"></i> Parámetros </a>
+                        }
+
+                    }
+                </li>
+
+
+            </ul>
+
+            <h3>Documentos</h3>
+            <ul class="nav side-menu">
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "16").FirstOrDefault()))
+                        {
+                            <a asp-page="/Documentos/Index"><i class="fa fa-file-text-o"></i> Documentos electrónicos </a>
+                        }
+
+                    }
+                </li>
+            </ul>
+
+        </div>
+ 
+
+    </div>
+    <!-- /sidebar menu -->
+    <!-- /menu footer buttons -->
+    <div class="sidebar-footer hidden-small">
+        <form class="form-inline" asp-page="/Account/Logout" id="cerrarSesion" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+
+            <a onclick="document.getElementById('cerrarSesion').submit()" data-toggle="tooltip" data-placement="top" title="Cerrar Sesión"  >
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </a>
+        </form>
+    </div>
+    <!-- /menu footer buttons -->
+
+</div>
+ 

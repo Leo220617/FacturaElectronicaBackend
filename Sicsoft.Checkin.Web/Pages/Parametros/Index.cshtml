@@ -1,0 +1,107 @@
+﻿@page 
+@model FacturaElectronica.Pages.Parametros.IndexModel
+@{
+    ViewData["Title"] = "Parametros";
+}
+@section styles{
+
+
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Parametros</h3>
+    </div>
+
+    <div class="title_right">
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input hidden asp-for="Input.id" />
+                    <div class="row">
+
+
+
+                        <div class="col-md-4">
+                            <label for="serieFE">Serie F.E:</label>
+                            <input class="form-control" asp-for="Input.SerieFE" id="serieFE" type="number" placeholder="Serie factura electrónica" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="serieFEC">Serie F.E.C:</label>
+                            <input class="form-control" asp-for="Input.SerieFEC" id="serieFEC" type="number" placeholder="Serie factura electrónica de compra" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="serieFEE">Serie F.E.E:</label>
+                            <input class="form-control" asp-for="Input.SerieFEE" id="serieFEE" type="number" placeholder="Serie factura electrónica de exportación" />
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="serieNC">Serie N.C:</label>
+                            <input class="form-control" asp-for="Input.SerieNC" id="serieNC" type="number" placeholder="Serie nota de crédito" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="serieND">Serie N.D:</label>
+                            <input class="form-control" asp-for="Input.SerieND" id="serieND" type="number" placeholder="Serie nota de débito" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <label for="serieTE">Serie T.E:</label>
+                            <input class="form-control" asp-for="Input.SerieTE" id="serieTE" type="number" placeholder="Serie tiquete electrónico" />
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div class="row">
+
+
+
+                        <div class="col-md-6">
+                            <label for="urlCyber">Url CyberFuel:</label>
+                            <input class="form-control" asp-for="Input.urlCyber" id="urlCyber" type="text" placeholder="Prod/Stag" />
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="urlResp">Url Repuesta:</label>
+                            <input class="form-control" asp-for="Input.urlCyberRespHacienda" id="urlResp" type="text" placeholder="Respuesta de Hacienda" />
+
+                        </div>
+                       
+                        </div>
+
+
+                
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

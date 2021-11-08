@@ -1,0 +1,181 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.IO;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.Extensions.Configuration;
+@using Refit;
+@using Sicsoft.Checkin.Web.Models;
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="/css/vendors/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/vendors/nprogress/nprogress.css" />
+    <link rel="stylesheet" href="/css/vendors/iCheck/skins/flat/green.css" />
+    <link rel="stylesheet" href="/css/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" />
+    <link rel="stylesheet" href="/css/vendors/jqvmap/dist/jqvmap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="/css/build/css/custom.min.css" />
+    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/css/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+
+    @await RenderSectionAsync("styles", false)
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+
+
+
+    <link rel="icon" href="~/img/icon.png" type="image/png" />
+
+
+</head>
+<body class="nav-md">
+
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <partial name="_NavbarPartial" />
+            </div>
+            <!-- Navbar-->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <nav class="nav navbar-nav">
+                        <ul class=" navbar-right">
+                            <li class="nav-item dropdown open" style="padding-left: 15px;">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                    @(((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == ClaimTypes.Name).Select(s1 => s1.Value).FirstOrDefault())
+                                </a>
+                                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "2").FirstOrDefault()))
+                                        {
+                                            <a class="dropdown-item" asp-page="/SeguridadRolesModulos/Index"> Roles</a>
+
+
+                                        }
+                                    }
+                                     
+                                    <form class="form-inline" asp-page="/Account/Logout" id="cerrarSesion" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                        <a onclick="document.getElementById('cerrarSesion').submit()" class="dropdown-item"><i class="fa fa-sign-out pull-right"></i> Cerrar Sesión</a>
+                                    </form>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="right_col" role="main">
+                <div class="">
+
+                    @RenderBody()
+
+
+                </div>
+            </div>
+
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Mainly scripts -->
+    <script src="~/css/vendors/jquery/dist/jquery.min.js"></script>
+    <script src="~/css/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/css/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/css/vendors/nprogress/nprogress.js"></script>
+    <script src="~/css/vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="~/css/vendors/gauge.js/dist/gauge.min.js"></script>
+    <script src="~/css/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/css/vendors/iCheck/icheck.min.js"></script>
+    <script src="~/css/vendors/skycons/skycons.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.resize.js"></script>
+    <script src="~/css/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="~/css/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="~/css/vendors/flot.curvedlines/curvedLines.js"></script>
+    <script src="~/css/vendors/DateJS/build/date.js"></script>
+
+    <script src="~/css/vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="~/css/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="~/css/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="~/css/vendors/moment/min/moment.min.js"></script>
+    <script src="~/css/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/css/build/js/custom.min.js"></script>
+
+    <!-- Datatables -->
+    <script src="~/css/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/css/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/css/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/css/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="~/css/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/css/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/css/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/css/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="~/css/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="~/css/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/css/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="~/css/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="~/css/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="~/css/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/css/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <!-- Select2 -->
+    <script src="~/css/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="~/js/scripts.js"></script>
+
+
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+
+    @RenderSection("Scripts", required: false)
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,226 @@
+﻿@page
+@model FacturaElectronica.Pages.Documentos.IndexModel
+@{
+    ViewData["Title"] = "Documentos";
+}
+@using System.Globalization;
+ 
+ 
+@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.IO;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.Extensions.Configuration;
+@using Refit;
+@inject IHttpContextAccessor httpContextAccessor
+
+
+@{
+    var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Documentos Electrónicos</h3>
+    </div>
+
+
+</div>
+<div class="clearfix"></div>
+
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+
+        <div class="x_panel">
+            <div class="x_title">
+                 Filtros: 
+            </div>
+            <div class="x_content">
+                <form method="get">
+                    <div class="ibox-content">
+                        <div class="row">
+
+
+
+
+                            <div class="col-md-4">
+                                <label class="col-form-label">Estado:</label>
+                                <div class="form-group row">
+
+                                    <div class="col-sm-10">
+                                        <select asp-for="filtro.Estado" id="idEstado" class="form-control  mi-selector">
+                                            <option value="NULL" selected>-Estado-</option>
+
+
+
+                                            <option value="aceptado">Aprobadas</option>
+                                            <option value="rechazado">Rechazadas</option>
+
+
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-sm-4">
+                                <label class="col-form-label">Fecha Inicial:</label>
+                                <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="col-form-label">Fecha Final:</label>
+                                <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal" />
+                            </div>
+                            <div class="col-sm-12">
+                                <br />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Tipo de Documento:</label>
+                                <div class="form-group row">
+
+                                    <div class="col-sm-10">
+                                        <select asp-for="filtro.CodMoneda" id="idTipo" class="form-control  mi-selector">
+                                            <option value="NULL" selected>-Tipo de Documento-</option>
+
+
+
+                                            <option value="01">Factura Electrónica</option>
+                                            <option value="02">Nota de Débito</option>
+                                            <option value="03">Nota de Crédito</option>
+                                            <option value="04">Tiquete Electrónico</option>
+                                            <option value="08">Factura de Compra</option>
+                                          
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <br />
+                            </div>
+                            <div class="col-sm-6" style="text-align: right;">
+                            </div>
+                            <div class="col-sm-6" style="text-align: right;">
+                                <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
+
+                            </div>
+
+
+
+
+
+
+                        </div>
+                        </div>
+                </form>
+            </div>
+        
+        </div>
+
+
+
+        <div class="x_panel">
+
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box table-responsive">
+                            <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Consecutivo SAP</th>
+                                        <th>Consecutivo Interno</th>
+                                        <th>Consecutivo Hacienda</th>
+                                        <th>Tipo de Documento</th>
+                                        <th>Fecha</th>
+                                        <th>Nombre Cliente</th>
+                                        <th>Moneda</th>
+                                        <th>Total Comprobante</th>
+                                        <th>Estado</th>
+                                     
+                                        <th>Acción</th>
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    @foreach (var item in Model.Documentos)
+                                    {
+                                    <tr>
+                                        <td>@item.consecutivoSAP</td>
+                                        <td>@item.consecutivoInterno</td>
+                                        <td>@item.ConsecutivoHacienda</td>
+                                        @switch (item.TipoDocumento)
+                                        {
+                                            case "01":
+                                                {
+                                                    <td>Factura Electrónica</td>
+                                                    break;
+                                                }
+                                            case "02":
+                                                {
+                                                    <td>Nota de débito</td>
+                                                    break;
+                                                }
+                                            case "03":
+                                                {
+                                                    <td>Nota de crédito</td>
+                                                    break;
+                                                }
+                                            case "04":
+                                                {
+                                                    <td>Tiquete Electrónico</td>
+                                                    break;
+                                                }
+                                            case "08":
+                                                {
+                                                    <td>Factura Electrónica de Compra</td>
+                                                    break;
+                                                }
+                                        }
+
+                                        <td>@item.Fecha.Value.ToString("dd/MM/yyyy")  </td>
+
+                                        <td>@item.CardName  </td>
+                                        <td>@item.moneda  </td>
+                                        <td>@item.totalcomprobante  </td>
+                                        <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
+
+
+                                        <td>
+
+                                            <a asp-page="./Editar" asp-route-id="@item.id" title="Visualizar" class="btn btn-warning"> Visualizar</a>
+
+
+                                        </td>
+
+                                    </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

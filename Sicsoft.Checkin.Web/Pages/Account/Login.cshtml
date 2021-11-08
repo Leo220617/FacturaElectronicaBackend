@@ -1,0 +1,110 @@
+﻿@page
+@model Sicsoft.Checkin.Web.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="/css/vendors/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/vendors/nprogress/nprogress.css" />
+    <link rel="stylesheet" href="/css/vendors/iCheck/skins/flat/green.css" />
+    <link rel="stylesheet" href="/css/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" />
+    <link rel="stylesheet" href="/css/vendors/jqvmap/dist/jqvmap.min.css" />
+    <link rel="stylesheet" href="/css/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="/css/build/css/custom.min.css" />
+    <link rel="icon" href="/jpg2.jpg" type="image/png" />
+</head>
+ 
+<body class="login">
+
+    <div>
+        <a class="hiddenanchor" id="signup"></a>
+        <a class="hiddenanchor" id="signin"></a>
+
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section class="login_content">
+                    <form method="post" id="formTipos" role="form" novalidate  enctype="multipart/form-data">
+                        <h1>Iniciar Sesión</h1>
+                        <div>
+                            <input type="email" class="form-control" asp-for="Input.Email" placeholder="Username" required />
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" asp-for="Input.Password" placeholder="Password" required />
+                        </div>
+                        <div>
+                            
+                            <button type="submit" class="btn btn-secondary btn-sm">Iniciar Sesión</button>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="separator">
+
+                            <div asp-validation-summary="All" style="text-align: center;" class="text-danger"></div>
+                            <div class="clearfix"></div>
+                            <br />
+
+                            <div>
+                                <h1>Facturación Electrónica</h1>
+                                <p>©2021 Todos los derechos reservados. DyD Consultores.</p>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+             
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="~/css/vendors/jquery/dist/jquery.min.js"></script>
+    <script src="~/css/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/css/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/css/vendors/nprogress/nprogress.js"></script>
+    <script src="~/css/vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="~/css/vendors/gauge.js/dist/gauge.min.js"></script>
+    <script src="~/css/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/css/vendors/iCheck/icheck.min.js"></script>
+    <script src="~/css/vendors/skycons/skycons.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="~/css/vendors/Flot/jquery.flot.resize.js"></script>
+    <script src="~/css/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="~/css/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="~/css/vendors/flot.curvedlines/curvedLines.js"></script>
+    <script src="~/css/vendors/DateJS/build/date.js"></script>
+
+    <script src="~/css/vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="~/css/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="~/css/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="~/css/vendors/moment/min/moment.min.js"></script>
+    <script src="~/css/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/css/build/js/custom.min.js"></script>
+
+
+    <!-- Custom and plugin javascript -->
+    <script src="~/js/scripts.js"></script>
+
+
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+
+    
+</body>
+</html>

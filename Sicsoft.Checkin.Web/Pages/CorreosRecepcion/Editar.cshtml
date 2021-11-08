@@ -1,0 +1,90 @@
+﻿@page "{id}"
+@model FacturaElectronica.Pages.CorreosRecepcion.EditarModel
+@{
+    ViewData["Title"] = "Correos Recepcion";
+}
+@section styles{
+
+
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Editar Correo de Recepción</h3>
+    </div>
+
+    <div class="title_right">
+
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input hidden asp-for="Correo.id" />
+                    <div class="row">
+
+
+
+                        <div class="col-md-6">
+                            <label for="correo">Correo Electrónico:</label>
+                            <input class="form-control" asp-for="Correo.RecepcionEmail" id="correo" type="email" placeholder="Correo Electrónico" />
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="server">Servidor del Correo:</label>
+                            <input class="form-control" asp-for="Correo.RecepcionHostName" id="server" type="text" placeholder="ejemplo: mail.google.com" />
+                        </div>
+
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                    <div class="form-check">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" asp-for="Correo.RecepcionUseSSL" id="check1" class="flat"> Usa SSL
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div class="row">
+
+
+
+                        <div class="col-md-6">
+                            <label for="psw">Contraseña del correo:</label>
+                            <input class="form-control" asp-for="Correo.RecepcionPassword" id="psw" type="text" placeholder="Clave del Correo Electrónico" />
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="port">Puerto Entrante del Correo:</label>
+                            <input class="form-control" asp-for="Correo.RecepcionPort" id="port" type="number" placeholder="ejemplo: 443" />
+                        </div>
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

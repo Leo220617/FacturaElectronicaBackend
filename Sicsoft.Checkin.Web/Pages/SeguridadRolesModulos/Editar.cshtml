@@ -1,0 +1,59 @@
+﻿@page "{id}"
+@model InversionGloblalWeb.Pages.SeguridadRolesModulos.EditarModel
+@{
+    ViewData["Title"] = "Roles";
+}
+
+@section styles{
+
+
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Editar Rol</h3>
+    </div>
+
+    <div class="title_right">
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input hidden asp-for="Rol.idRol" />
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label for="desc">Descripción:</label>
+                            <input type="text" id="desc" class="form-control" asp-for="Rol.NombreRol" required />
+                        </div>
+
+
+
+
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
