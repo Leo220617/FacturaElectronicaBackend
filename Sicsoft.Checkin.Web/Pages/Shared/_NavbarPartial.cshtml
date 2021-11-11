@@ -99,6 +99,14 @@
 
                     }
                 </li>
+                <li>
+                    @{if (!string.IsNullOrEmpty(Roles.Where(a => a == "19").FirstOrDefault()))
+                        {
+                            <a asp-page="/Aceptacion/Index"><i class="fa fa-file-text-o"></i> Compras electrónicas </a>
+                        }
+
+                    }
+                </li>
             </ul>
 
         </div>

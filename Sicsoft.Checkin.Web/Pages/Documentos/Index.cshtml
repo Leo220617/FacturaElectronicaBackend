@@ -201,7 +201,7 @@
 
                                         <td>@item.CardName  </td>
                                         <td>@item.moneda  </td>
-                                        <td>@item.totalcomprobante  </td>
+                                        <td>@Math.Round(item.totalcomprobante.Value,2)  </td>
                                         <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
 
 

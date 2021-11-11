@@ -1,0 +1,180 @@
+﻿@page "{id}"
+@model FacturaElectronica.Pages.Aceptacion.EditarModel
+@{
+    ViewData["Title"] = "Compra Electrónica";
+}
+@section styles{
+
+
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script type="text/javascript">
+    function descargarxml(str, cons) {
+        var encodedStringAtoB = str;
+
+        // Decode the String
+        var decodedStringAtoB = atob(encodedStringAtoB);
+
+        var xmltext = decodedStringAtoB;
+
+        var filename = cons + ".xml";
+        var pom = document.createElement('a');
+        var bb = new Blob([xmltext], { type: 'text/plain' });
+
+        pom.setAttribute('href', window.URL.createObjectURL(bb));
+        pom.setAttribute('download', filename);
+
+        pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+        pom.draggable = true;
+        pom.classList.add('dragout');
+
+        pom.click();
+
+
+    }
+
+    function setImpuesto() {
+        if ($("#tipo").val() == "05") {
+            $("#imp").val($("#timp").val());
+        } else {
+            $("#imp").val(0);
+        }
+        totalCompro();
+    }
+    function totalCompro() {
+        if ($("#tipo").val() == "05") {
+            /**/
+            $("#gas").val($("#tgas").val());
+    /**/
+} else {
+    $("#gas").val(0);
+}
+}
+
+
+
+
+</script>
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Compra Electrónica</h3>
+    </div>
+
+    <div class="title_right">
+
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Bandeja.Id" hidden />
+
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="hac">Consecutivo Hacienda:</label>
+                            <input type="text" id="hac" class="form-control" asp-for="Bandeja.NumeroConsecutivo" readonly />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="idEmi">ID Emisor:</label>
+                            <input type="text" id="idEmi" class="form-control" asp-for="Bandeja.IdEmisor" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="nom">Nombre:</label>
+                            <input type="text" id="nom" class="form-control" asp-for="Bandeja.NombreEmisor" readonly />
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="timp">Total de Impuesto:</label>
+                            <input type="number" id="timp" class="form-control" asp-for="Bandeja.Impuesto" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tgas">Total Comprobante:</label>
+                            <input type="number" id="tgas" class="form-control" asp-for="Bandeja.TotalComprobante" readonly />
+                        </div>
+                    </div>
+
+
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="tipo">Tipo:</label>
+                            <select id="tipo" class="form-control" asp-for="Bandeja.tipo" required onchange="javascript: setImpuesto(); ">
+                                <option value="0">Seleccione</option>
+
+                                <option value="05"> Aceptación Completa </option>
+                                <option value="06"> Aceptación Parcial </option>
+                                <option value="07"> Rechazo Completo </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="det">Detalle Mensaje:</label>
+                            <input type="text" id="det" class="form-control" maxlength="160" asp-for="Bandeja.DetalleMensaje"  />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cond">Condición de Impuesto:</label>
+                            <select id="cond" class="form-control" asp-for="Bandeja.CondicionImpuesto" required>
+                                <option value="0">Seleccione</option>
+
+                                <option value="01"> Genera Crédito IVA </option>
+                                <option value="02"> Genera Crédito parcial IVA </option>
+                                <option value="03"> Bienes de Capital </option>
+                                <option value="04"> Gasto corriente no genera crédito </option>
+                                <option value="05"> Proporcionalidad </option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="cd">Código de Actividad:</label>
+                            <input type="text" id="cd" class="form-control" asp-for="Bandeja.CodigoActividad" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="imp">Impuesto a creditar:</label>
+                            <input type="number" id="imp" class="form-control" asp-for="Bandeja.impuestoAcreditar" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gas">Gasto Aplicable:</label>
+                            <input type="number" id="gas" class="form-control" asp-for="Bandeja.gastoAplicable" required />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,3 +1,13 @@
-﻿.btn-danger{
+﻿.btn-danger {
     color: white !important;
+    font-size: 90% !important;
+}
+.btn-warning {
+    font-size: 90%;
+}
+.btn-primary {
+    font-size: 73%;
+}
+.btn-success {
+    font-size: 90%;
 }

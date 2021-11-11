@@ -148,7 +148,7 @@ namespace Sicsoft.Checkin.Web
            .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
             services.AddRefitClient<ICrudApi<BandejaEntradaViewModel, int>>()
-         .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{Configuration["UrlWebApi"]}/api/Compras"))
+         .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{Configuration["UrlWebApi"]}/api/Aceptacion"))
          .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
             services.AddRefitClient<ICrudApi<ParametrosViewModel, int>>()
@@ -170,6 +170,10 @@ namespace Sicsoft.Checkin.Web
             services.AddRefitClient<ICrudApi<DetDocumentoViewModel, int>>()
          .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{Configuration["UrlWebApi"]}/api/Detalles"))
          .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+
+            services.AddRefitClient<ICrudApi<RecibidoRoles, int>>()
+       .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{Configuration["UrlWebApi"]}/api/Compras"))
+       .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
             return services;
         }

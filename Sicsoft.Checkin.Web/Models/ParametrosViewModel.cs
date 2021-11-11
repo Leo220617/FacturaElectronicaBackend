@@ -27,5 +27,7 @@ namespace FacturaElectronica.Models
         public string CampoConsecutivo { get; set; }
         public string CampoClave { get; set; }
         public string CampoEstado { get; set; }
+
+        public string urlCyberAceptacion { get; set; }
     }
 }

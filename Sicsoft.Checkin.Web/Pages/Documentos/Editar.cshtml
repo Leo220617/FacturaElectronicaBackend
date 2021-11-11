@@ -113,7 +113,9 @@
                                 <strong>Moneda</strong>
                                 <br>@Model.Enc.moneda
                                 <br> <strong>Tipo de Cambio</strong>
-                                <br>@Model.Enc.tipoCambio
+                                <br>@Math.Round(Model.Enc.tipoCambio.Value,2)
+                                <br> <strong>Fecha</strong>
+                                <br>@Model.Enc.Fecha.Value.ToString("dd/MM/yyyy")
                             </address>
                         </div>
                         <!-- /.col -->
@@ -171,12 +173,12 @@
                                     {
                                         <tr>
                                             <td>@item.NumLinea</td>
-                                            <td>@item.cantidad</td>
+                                            <td>@Math.Round(item.cantidad,2)</td>
                                             <td>@item.codPro</td>
                                             <td>
                                                 @item.NomPro
                                             </td>
-                                            <td>@item.totalLinea</td>
+                                            <td>@Math.Round(item.totalLinea,2)</td>
                                         </tr>
                                     }
 
@@ -201,19 +203,19 @@
                                     <tbody>
                                         <tr>
                                             <th style="width:50%">Subtotal:</th>
-                                            <td>@Model.Enc.totalventa</td>
+                                            <td>@Math.Round(Model.Enc.totalventa.Value,2)</td>
                                         </tr>
                                         <tr>
                                             <th>Impuestos</th>
-                                            <td>@Model.Enc.totalimpuestos</td>
+                                            <td>@Math.Round(Model.Enc.totalimpuestos.Value,2)</td>
                                         </tr>
                                         <tr>
                                             <th>Descuentos:</th>
-                                            <td>@Model.Enc.totaldescuentos</td>
+                                            <td>@Math.Round(Model.Enc.totaldescuentos.Value,2)</td>
                                         </tr>
                                         <tr>
                                             <th>Total:</th>
-                                            <td>@Model.Enc.totalcomprobante</td>
+                                            <td>@Math.Round(Model.Enc.totalcomprobante.Value,2)</td>
                                         </tr>
                                     </tbody>
                                 </table>

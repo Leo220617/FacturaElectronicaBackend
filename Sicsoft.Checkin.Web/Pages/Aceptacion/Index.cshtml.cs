@@ -12,34 +12,58 @@ using Newtonsoft.Json;
 using Refit;
 using Sicsoft.Checkin.Web.Servicios;
 
-namespace FacturaElectronica.Pages.CorreosRecepcion
+namespace FacturaElectronica.Pages.Aceptacion
 {
     public class IndexModel : PageModel
     {
         private readonly IConfiguration configuration;
-        private readonly ICrudApi<CorreosRecepcionViewModel, int> service;
+        private readonly ICrudApi<BandejaEntradaViewModel, int> sBandeja;
+        private readonly ICrudApi<RecibidoRoles, int> compras;
 
         [BindProperty]
-        public CorreosRecepcionViewModel[] Correos { get; set; }
+        public BandejaEntradaViewModel[] Bandejas { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public ParametrosFiltros filtro { get; set; }
 
-        public IndexModel(ICrudApi<CorreosRecepcionViewModel, int> service)
+        public IndexModel(ICrudApi<BandejaEntradaViewModel, int> sBandeja, ICrudApi<RecibidoRoles, int> compras)
         {
-            this.service = service;
+            this.sBandeja = sBandeja;
+            this.compras = compras;
         }
+
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
                 var Roles1 = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
-                if (string.IsNullOrEmpty(Roles1.Where(a => a == "6").FirstOrDefault()))
+                if (string.IsNullOrEmpty(Roles1.Where(a => a == "18").FirstOrDefault()))
                 {
                     return RedirectToPage("/NoPermiso");
                 }
+                DateTime time = new DateTime();
 
-                Correos = await service.ObtenerLista(filtro);
+                if (time == filtro.FechaInicial)
+                {
+
+                    await compras.RealizarLecturaEmails();
+                    filtro.FechaInicial = DateTime.Now;
+
+                    filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
+
+
+                    DateTime primerDia = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
+
+
+                    DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
+
+                    filtro.FechaFinal = ultimoDia;
+
+
+
+                }
+
+                Bandejas = await sBandeja.ObtenerLista(filtro);
 
 
 
@@ -53,20 +77,5 @@ namespace FacturaElectronica.Pages.CorreosRecepcion
                 return Page();
             }
         }
-
-        public async Task<IActionResult> OnGetEliminar(int id)
-        {
-            try
-            {
-
-                await service.Eliminar(id);
-                return new JsonResult(true);
-            }
-            catch (ApiException ex)
-            {
-                return new JsonResult(false);
-            }
-        }
-
     }
 }

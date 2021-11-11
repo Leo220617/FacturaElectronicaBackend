@@ -1,0 +1,210 @@
+﻿@page
+@model FacturaElectronica.Pages.Aceptacion.IndexModel
+@{
+    ViewData["Title"] = "Compras";
+}
+@using System.Globalization;
+
+
+@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.IO;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.Extensions.Configuration;
+@using Refit;
+@inject IHttpContextAccessor httpContextAccessor
+
+
+@{
+    var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
+}
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function descargarxml(str, cons) {
+            var encodedStringAtoB = str;
+
+            // Decode the String
+            var decodedStringAtoB = atob(encodedStringAtoB);
+
+            var xmltext = decodedStringAtoB;
+
+            var filename = cons + ".xml";
+            var pom = document.createElement('a');
+            var bb = new Blob([xmltext], { type: 'text/plain' });
+
+            pom.setAttribute('href', window.URL.createObjectURL(bb));
+            pom.setAttribute('download', filename);
+
+            pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+            pom.draggable = true;
+            pom.classList.add('dragout');
+
+            pom.click();
+
+
+        }
+    </script>
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Compras Electrónicas</h3>
+    </div>
+
+
+</div>
+<div class="clearfix"></div>
+
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-12  ">
+
+        <div class="x_panel">
+            <div class="x_title">
+                Filtros:
+            </div>
+            <div class="x_content">
+                <form method="get">
+                    <div class="ibox-content">
+                        <div class="row">
+
+                            <div class="col-sm-4">
+                                <label class="col-form-label">Fecha Inicial:</label>
+                                <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="col-form-label">Fecha Final:</label>
+                                <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal" />
+                            </div>
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-sm-12">
+                                <br />
+                            </div>
+
+                            <div class="col-sm-6" style="text-align: right;">
+                            </div>
+                            <div class="col-sm-6" style="text-align: right;">
+                                <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
+
+                            </div>
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+
+        <div class="x_panel">
+
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box table-responsive">
+                            <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+
+                                        <th>Consecutivo Hacienda</th>
+                                        <th>Cédula</th>
+                                        <th>Nombre Emisor</th>
+                                        <th>Fecha</th>
+                                        <th>Moneda</th>
+                                        <th>Total Comprobante</th>
+                                        <th>Estado Receptor</th>
+                                        <th>Estado</th>
+
+                                        <th>Acción</th>
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    @foreach (var item in Model.Bandejas)
+                                    {
+                                    <tr>
+                                        <td>@item.NumeroConsecutivo</td>
+                                        <td>@item.IdEmisor</td>
+                                        <td>@item.NombreEmisor</td>
+
+
+                                        <td>@DateTime.Parse(item.FechaEmision).ToString("dd/MM/yyyy")  </td>
+
+                                        <td>@item.CodigoMoneda  </td>
+
+                                        <td>@Math.Round(item.TotalComprobante.Value, 2)  </td>
+                                        <td>
+                                            @switch(item.tipo)
+                                                {
+                                                    case "05":
+                                                {
+                                            <span>Aceptado Totalmente</span>
+                                                    break;
+                                                 }
+                                                   case "06":
+                                                {
+                                            <span>Aceptado Parcialmente</span>
+                                                    break;
+                                                 }
+                                                   case "07":
+                                                {
+                                            <span>Rechazado Totalmente</span>
+                                                    break;
+                                                 }
+                                                default:
+                                                {
+                                            <span>Sin Procesar</span>
+                                                    break;
+                                                 }
+                                                 }
+
+                                        </td>
+                                        <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+
+
+                                        <td>
+                                            @if (item.Procesado != "1")
+                                                {
+
+                                            <a asp-page="./Editar" asp-route-id="@item.Id" title="Visualizar" class="btn btn-warning"> Aceptar/Rechazar</a>
+                                                }
+                                            &nbsp;
+
+                                            @if (!string.IsNullOrEmpty(item.XMLRespuesta))
+                                                {
+                                            <button class="btn btn-primary pull-right" style="margin-right: 5px;" onclick="javascript: descargarxml('@item.XMLRespuesta', '@item.NumeroConsecutivo')"><i class="fa fa-download"></i> Descargar XML Firmado</button>
+                                                }
+
+
+                                        </td>
+
+                                    </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -59,5 +59,11 @@ namespace FacturaElectronica.Models
         public decimal gastoAplicable { get; set; }
         public string situacionPresentacion { get; set; }
         public string tipoIdentificacionEmisor { get; set; }
+        public string JSON { get; set; }
+        public string RespuestaHacienda { get; set; }
+        public string XMLRespuesta { get; set; }
+
+        public string ClaveReceptor { get; set; }
+        public string ConsecutivoReceptor { get; set; }
     }
 }

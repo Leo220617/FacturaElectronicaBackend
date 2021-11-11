@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Castle.Core.Configuration;
+using FacturaElectronica.Models;
 using InversionGloblalWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Refit;
 using Sicsoft.Checkin.Web.Servicios;
-using FacturaElectronica.Models;
 
 namespace FacturaElectronica.Pages.CorreosRecepcion
 {
@@ -60,5 +60,6 @@ namespace FacturaElectronica.Pages.CorreosRecepcion
                 return Page();
             }
         }
+
     }
 }
