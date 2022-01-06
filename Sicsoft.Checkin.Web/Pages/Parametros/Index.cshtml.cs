@@ -51,7 +51,7 @@ namespace FacturaElectronica.Pages.Parametros
             try
             {
                 await service.Editar(Input);
-                return Redirect("../Index");
+                return Redirect("./Index");
             }
             catch (ApiException ex)
             {
