@@ -19,28 +19,39 @@ namespace FacturaElectronica.Pages.Aceptacion
         private readonly IConfiguration configuration;
         private readonly ICrudApi<BandejaEntradaViewModel, int> sBandeja;
         private readonly ICrudApi<RecibidoRoles, int> compras;
+        private readonly ICrudApi<ParametrosViewModel, int> service;
 
         [BindProperty]
         public BandejaEntradaViewModel[] Bandejas { get; set; }
 
+        [BindProperty]
+        public ParametrosViewModel Parametros { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public ParametrosFiltros filtro { get; set; }
 
-        public IndexModel(ICrudApi<BandejaEntradaViewModel, int> sBandeja, ICrudApi<RecibidoRoles, int> compras)
+        public IndexModel(ICrudApi<BandejaEntradaViewModel, int> sBandeja, ICrudApi<RecibidoRoles, int> compras, ICrudApi<ParametrosViewModel, int> service)
         {
             this.sBandeja = sBandeja;
             this.compras = compras;
+            this.service = service;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
+
+
                 var Roles1 = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
                 if (string.IsNullOrEmpty(Roles1.Where(a => a == "18").FirstOrDefault()))
                 {
                     return RedirectToPage("/NoPermiso");
                 }
+
+
+                Parametros = await service.ObtenerPorId(1);
+
                 DateTime time = new DateTime();
 
                 if (time == filtro.FechaInicial)

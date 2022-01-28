@@ -50,6 +50,9 @@
 
 
         }
+
+
+
     </script>
 }
 
@@ -182,17 +185,24 @@
 
                                         <td>
                                             @if (item.Procesado != "1")
-                                                {
+                                            {
 
-                                            <a asp-page="./Editar" asp-route-id="@item.Id" title="Visualizar" class="btn btn-warning"> Aceptar/Rechazar</a>
-                                                }
+                                                <a asp-page="./Editar" asp-route-id="@item.Id" title="Visualizar" class="btn btn-warning"> Aceptar/Rechazar</a>
+                                            }
                                             &nbsp;
 
                                             @if (!string.IsNullOrEmpty(item.XMLRespuesta))
-                                                {
-                                            <button class="btn btn-primary pull-right" style="margin-right: 5px;" onclick="javascript: descargarxml('@item.XMLRespuesta', '@item.NumeroConsecutivo')"><i class="fa fa-download"></i> Descargar XML Firmado</button>
-                                                }
+                                            {
+                                                <button class="btn btn-primary pull-right" style="margin-right: 5px;" onclick="javascript: descargarxml('@item.XMLRespuesta', '@item.NumeroConsecutivo')"><i class="fa fa-download"></i> Descargar XML Firmado</button>
+                                            }
 
+                                            &nbsp;
+
+
+                                            @if (!string.IsNullOrEmpty(item.XmlConfirmacion))
+                                            {
+                                                <a class="btn btn-danger pull-right" style="margin-right: 5px;" href="@Model.Parametros.urlWebApi@item.XmlConfirmacion" target="_blank">PDF </a>
+                                            }
 
                                         </td>
 

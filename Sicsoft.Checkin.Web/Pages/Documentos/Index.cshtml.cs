@@ -47,16 +47,16 @@ namespace FacturaElectronica.Pages.Documentos
 
                     filtro.FechaInicial = DateTime.Now;
 
-                    filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
+                    //filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
 
 
-                    DateTime primerDia = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
+                    //DateTime primerDia = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
 
 
-                    DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
+                    //DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
 
-                    filtro.FechaFinal = ultimoDia;
-
+                    //filtro.FechaFinal = ultimoDia;
+                    filtro.FechaFinal = filtro.FechaInicial.AddDays(2);
 
 
                 }

@@ -29,5 +29,6 @@ namespace FacturaElectronica.Models
         public string CampoEstado { get; set; }
 
         public string urlCyberAceptacion { get; set; }
+        public string urlWebApi { get; set; }
     }
 }
