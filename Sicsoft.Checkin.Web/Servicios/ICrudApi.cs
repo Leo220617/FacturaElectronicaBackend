@@ -45,6 +45,9 @@ namespace Sicsoft.Checkin.Web.Servicios
         [Get("/Insertar")]
         Task<TEntity> InsertarAsiento(int idCierre);
 
+        [Get("/Reenvio")]
+        Task<TEntity> ReenvioFacturas(int id, string Sucursal="001");
+
         [Get("/RealizarLecturaEmail")]
         Task RealizarLecturaEmails();
 

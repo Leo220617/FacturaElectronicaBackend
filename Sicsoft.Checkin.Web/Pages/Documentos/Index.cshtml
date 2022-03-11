@@ -4,8 +4,8 @@
     ViewData["Title"] = "Documentos";
 }
 @using System.Globalization;
- 
- 
+
+
 @using Microsoft.AspNetCore.Http
 @using System;
 @using System.Collections.Generic;
@@ -26,7 +26,74 @@
 
 @section scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
 
+        var ids = 0;
+    function onClickModal(id) {
+        ids = id;
+        Swal.fire({
+            title: '¿Desea reenviar este correo?',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: `Aceptar`,
+            denyButtonText: `Cancelar`,
+            customClass: {
+                confirmButton: 'swalBtnColor',
+                denyButton: 'swalDeny'
+            },
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+
+                Eliminar();
+
+            }
+        })
+
+    }
+        function  Eliminar() {
+
+         $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: '@Url.Page("Index", "Reenviar")',
+                        data: { id: ids },
+             success: function (result) {
+                 console.log(result);
+                             if (result == false) {
+                                 ids = 0;
+                                 Swal.fire({
+                                     icon: 'error',
+                                     title: 'Oops...',
+                                     text: 'Ha ocurrido un error al intentar reenviar'
+
+                                 })
+
+                             } else {
+                                 Swal.fire({
+                                     title: "Ha sido reenviado con éxito",
+
+                                     icon: 'success',
+                                     showCancelButton: false,
+                                     customClass: {
+                                         confirmButton: 'swalBtnColor',
+
+                                     },
+                                     confirmButtonText: 'OK'
+                                 }).then((result) => {
+                                     if (result.isConfirmed) {
+                                         
+                                     }
+                                 })
+                             }
+             },
+             beforeSend: function () {
+
+             }
+                     })
+        }
+
+    </script>
 }
 
 <div class="page-title">
@@ -45,7 +112,7 @@
 
         <div class="x_panel">
             <div class="x_title">
-                 Filtros: 
+                Filtros:
             </div>
             <div class="x_content">
                 <form method="get">
@@ -105,7 +172,7 @@
                                             <option value="03">Nota de Crédito</option>
                                             <option value="04">Tiquete Electrónico</option>
                                             <option value="08">Factura de Compra</option>
-                                          
+
                                         </select>
                                     </div>
 
@@ -128,10 +195,10 @@
 
 
                         </div>
-                        </div>
+                    </div>
                 </form>
             </div>
-        
+
         </div>
 
 
@@ -154,7 +221,7 @@
                                         <th>Moneda</th>
                                         <th>Total Comprobante</th>
                                         <th>Estado</th>
-                                     
+
                                         <th>Acción</th>
 
                                     </tr>
@@ -164,55 +231,57 @@
                                 <tbody>
                                     @foreach (var item in Model.Documentos)
                                     {
-                                    <tr>
-                                        <td>@item.consecutivoSAP</td>
-                                        <td>@item.consecutivoInterno</td>
-                                        <td>@item.ConsecutivoHacienda</td>
-                                        @switch (item.TipoDocumento)
-                                        {
-                                            case "01":
-                                                {
-                                                    <td>Factura Electrónica</td>
-                                                    break;
-                                                }
-                                            case "02":
-                                                {
-                                                    <td>Nota de débito</td>
-                                                    break;
-                                                }
-                                            case "03":
-                                                {
-                                                    <td>Nota de crédito</td>
-                                                    break;
-                                                }
-                                            case "04":
-                                                {
-                                                    <td>Tiquete Electrónico</td>
-                                                    break;
-                                                }
-                                            case "08":
-                                                {
-                                                    <td>Factura Electrónica de Compra</td>
-                                                    break;
-                                                }
-                                        }
+                                        <tr>
+                                            <td>@item.consecutivoSAP</td>
+                                            <td>@item.consecutivoInterno</td>
+                                            <td>@item.ConsecutivoHacienda</td>
+                                            @switch (item.TipoDocumento)
+                                            {
+                                                case "01":
+                                                    {
+                                                        <td>Factura Electrónica</td>
+                                                        break;
+                                                    }
+                                                case "02":
+                                                    {
+                                                        <td>Nota de débito</td>
+                                                        break;
+                                                    }
+                                                case "03":
+                                                    {
+                                                        <td>Nota de crédito</td>
+                                                        break;
+                                                    }
+                                                case "04":
+                                                    {
+                                                        <td>Tiquete Electrónico</td>
+                                                        break;
+                                                    }
+                                                case "08":
+                                                    {
+                                                        <td>Factura Electrónica de Compra</td>
+                                                        break;
+                                                    }
+                                            }
 
-                                        <td>@item.Fecha.Value.ToString("dd/MM/yyyy")  </td>
+                                            <td>@item.Fecha.Value.ToString("dd/MM/yyyy")  </td>
 
-                                        <td>@item.CardName  </td>
-                                        <td>@item.moneda  </td>
-                                        <td>@Math.Round(item.totalcomprobante.Value,2)  </td>
-                                        <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
-
-
-                                        <td>
-
-                                            <a asp-page="./Editar" asp-route-id="@item.id" title="Visualizar" class="btn btn-warning"> Visualizar</a>
+                                            <td>@item.CardName  </td>
+                                            <td>@item.moneda  </td>
+                                            <td>@Math.Round(item.totalcomprobante.Value, 2)  </td>
+                                            <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
 
 
-                                        </td>
+                                            <td>
 
-                                    </tr>
+                                                <a asp-page="./Editar" asp-route-id="@item.id" title="Visualizar" class="btn btn-warning"> <i class="fa fa-eye"></i></a>
+                                                &nbsp;
+                                                <a onclick="javascript: onClickModal('@item.id')" title="Reenviar" class="btn btn-primary"><i class="fa fa-send"></i></a>
+
+
+                                            </td>
+
+                                        </tr>
                                     }
 
                                 </tbody>

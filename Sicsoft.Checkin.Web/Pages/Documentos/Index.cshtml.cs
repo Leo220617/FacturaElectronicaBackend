@@ -75,5 +75,20 @@ namespace FacturaElectronica.Pages.Documentos
                 return Page();
             }
         }
+
+
+        public async Task<IActionResult> OnGetReenviar(int id)
+        {
+            try
+            {
+
+                await service.ReenvioFacturas(id);
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
     }
 }
