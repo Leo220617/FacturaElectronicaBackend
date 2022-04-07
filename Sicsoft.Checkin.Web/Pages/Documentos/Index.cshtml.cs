@@ -77,12 +77,12 @@ namespace FacturaElectronica.Pages.Documentos
         }
 
 
-        public async Task<IActionResult> OnGetReenviar(int id)
+        public async Task<IActionResult> OnGetReenviar(int id, string correos)
         {
             try
             {
 
-                await service.ReenvioFacturas(id);
+                await service.ReenvioFacturas(id,"001",correos);
                 return new JsonResult(true);
             }
             catch (Exception ex)

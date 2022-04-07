@@ -18,7 +18,14 @@
 @using Microsoft.Extensions.Configuration;
 @using Refit;
 @inject IHttpContextAccessor httpContextAccessor
+@using System.Globalization;
+@{
+    NumberFormatInfo formato = new CultureInfo("en-US").NumberFormat;
+    formato.CurrencyGroupSeparator = ",";
+    formato.NumberDecimalSeparator = ".";
 
+
+}
 
 @{
     var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
@@ -27,6 +34,38 @@
 @section scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
+        function TableExport() {
+            var tableID = 'tablaexcel';
+            var filename = 'Compras';
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+        }
         function descargarxml(str, cons) {
             var encodedStringAtoB = str;
 
@@ -97,6 +136,8 @@
                             <div class="col-sm-6" style="text-align: right;">
                             </div>
                             <div class="col-sm-6" style="text-align: right;">
+                                <button title="Exportar a Excel" type="button" class="btn btn-success" onclick="javascript: TableExport();">EXCEL</button>
+
                                 <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
 
                             </div>
@@ -131,6 +172,8 @@
                                         <th>Fecha</th>
                                         <th>Moneda</th>
                                         <th>Total Comprobante</th>
+                                        <th>Total Impuestos</th>
+
                                         <th>Estado Receptor</th>
                                         <th>Estado</th>
 
@@ -141,72 +184,74 @@
 
 
                                 <tbody>
-                                    @foreach (var item in Model.Bandejas)
+                                    @foreach (var item in Model.Bandejas.Where(a => a.XmlConfirmacion != null).ToList())
                                     {
-                                    <tr>
-                                        <td>@item.NumeroConsecutivo</td>
-                                        <td>@item.IdEmisor</td>
-                                        <td>@item.NombreEmisor</td>
+                                        <tr>
+                                            <td>@item.NumeroConsecutivo</td>
+                                            <td>@item.IdEmisor</td>
+                                            <td>@item.NombreEmisor</td>
 
 
-                                        <td>@DateTime.Parse(item.FechaEmision).ToString("dd/MM/yyyy")  </td>
+                                            <td> @((item.FechaIngreso).ToString("dd/MM/yyyy"))  </td>
 
-                                        <td>@item.CodigoMoneda  </td>
+                                            <td>@item.CodigoMoneda  </td>
 
-                                        <td>@Math.Round(item.TotalComprobante.Value, 2)  </td>
-                                        <td>
-                                            @switch(item.tipo)
+                                            <td>@Math.Round(item.TotalComprobante.Value, 2).ToString("N", formato)  </td>
+                                            <td>@Math.Round(item.Impuesto, 2).ToString("N", formato)  </td>
+
+                                            <td>
+                                                @switch (item.tipo)
                                                 {
                                                     case "05":
+                                                        {
+                                                            <span>Aceptado Totalmente</span>
+                                                            break;
+                                                        }
+                                                    case "06":
+                                                        {
+                                                            <span>Aceptado Parcialmente</span>
+                                                            break;
+                                                        }
+                                                    case "07":
+                                                        {
+                                                            <span>Rechazado Totalmente</span>
+                                                            break;
+                                                        }
+                                                    default:
+                                                        {
+                                                            <span>Sin Procesar</span>
+                                                            break;
+                                                        }
+                                                }
+
+                                            </td>
+                                            <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+
+
+                                            <td>
+                                                @if (item.Procesado != "1")
                                                 {
-                                            <span>Aceptado Totalmente</span>
-                                                    break;
-                                                 }
-                                                   case "06":
+
+                                                    <a asp-page="./Editar" asp-route-id="@item.Id" title="Visualizar" class="btn btn-warning"> Aceptar/Rechazar</a>
+                                                }
+                                                &nbsp;
+
+                                                @if (!string.IsNullOrEmpty(item.XMLRespuesta))
                                                 {
-                                            <span>Aceptado Parcialmente</span>
-                                                    break;
-                                                 }
-                                                   case "07":
+                                                    <button class="btn btn-primary pull-right" style="margin-right: 5px;" onclick="javascript: descargarxml('@item.XMLRespuesta', '@item.NumeroConsecutivo')"><i class="fa fa-download"></i> Descargar XML Firmado</button>
+                                                }
+
+                                                &nbsp;
+
+
+                                                @if (!string.IsNullOrEmpty(item.XmlConfirmacion))
                                                 {
-                                            <span>Rechazado Totalmente</span>
-                                                    break;
-                                                 }
-                                                default:
-                                                {
-                                            <span>Sin Procesar</span>
-                                                    break;
-                                                 }
-                                                 }
+                                                    <a class="btn btn-danger pull-right" style="margin-right: 5px;" href="@Model.Parametros.urlWebApi@item.XmlConfirmacion" target="_blank">PDF </a>
+                                                }
 
-                                        </td>
-                                        <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+                                            </td>
 
-
-                                        <td>
-                                            @if (item.Procesado != "1")
-                                            {
-
-                                                <a asp-page="./Editar" asp-route-id="@item.Id" title="Visualizar" class="btn btn-warning"> Aceptar/Rechazar</a>
-                                            }
-                                            &nbsp;
-
-                                            @if (!string.IsNullOrEmpty(item.XMLRespuesta))
-                                            {
-                                                <button class="btn btn-primary pull-right" style="margin-right: 5px;" onclick="javascript: descargarxml('@item.XMLRespuesta', '@item.NumeroConsecutivo')"><i class="fa fa-download"></i> Descargar XML Firmado</button>
-                                            }
-
-                                            &nbsp;
-
-
-                                            @if (!string.IsNullOrEmpty(item.XmlConfirmacion))
-                                            {
-                                                <a class="btn btn-danger pull-right" style="margin-right: 5px;" href="@Model.Parametros.urlWebApi@item.XmlConfirmacion" target="_blank">PDF </a>
-                                            }
-
-                                        </td>
-
-                                    </tr>
+                                        </tr>
                                     }
 
                                 </tbody>
@@ -218,3 +263,78 @@
         </div>
     </div>
 </div>
+<!--Excel-->
+
+<table id="tablaexcel" class="table table-striped table-bordered" style="width:100%" hidden>
+    <thead>
+        <tr>
+
+            <th>Consecutivo Hacienda</th>
+            <th>Cedula</th>
+            <th>Nombre Emisor</th>
+            <th>Fecha</th>
+            <th>Moneda</th>
+            <th>Total Comprobante</th>
+            <th>Total Impuestos</th>
+
+            <th>Estado Receptor</th>
+            <th>Estado</th>
+
+ 
+
+        </tr>
+    </thead>
+
+
+    <tbody>
+        @foreach (var item in Model.Bandejas)
+        {
+            <tr>
+                <td>@item.NumeroConsecutivo</td>
+                <td>@item.IdEmisor</td>
+                <td>@item.NombreEmisor</td>
+
+
+                <td>@DateTime.Parse(item.FechaEmision).ToString("dd/MM/yyyy")  </td>
+
+                <td>@item.CodigoMoneda  </td>
+
+                <td>@Math.Round(item.TotalComprobante.Value, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.Impuesto, 2).ToString("N", formato)  </td>
+
+                <td>
+                    @switch (item.tipo)
+                    {
+                        case "05":
+                            {
+                                <span>Aceptado Totalmente</span>
+                                break;
+                            }
+                        case "06":
+                            {
+                                <span>Aceptado Parcialmente</span>
+                                break;
+                            }
+                        case "07":
+                            {
+                                <span>Rechazado Totalmente</span>
+                                break;
+                            }
+                        default:
+                            {
+                                <span>Sin Procesar</span>
+                                break;
+                            }
+                    }
+
+                </td>
+                <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+
+
+              
+
+            </tr>
+        }
+
+    </tbody>
+</table>

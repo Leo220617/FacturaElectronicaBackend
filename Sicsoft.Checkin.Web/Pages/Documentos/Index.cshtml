@@ -18,7 +18,14 @@
 @using Microsoft.Extensions.Configuration;
 @using Refit;
 @inject IHttpContextAccessor httpContextAccessor
+@using System.Globalization;
+@{
+    NumberFormatInfo formato = new CultureInfo("en-US").NumberFormat;
+    formato.CurrencyGroupSeparator = ",";
+    formato.NumberDecimalSeparator = ".";
 
+
+}
 
 @{
     var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
@@ -26,29 +33,93 @@
 
 @section scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
     <script>
+        function TableExport() {
+            var tableID = 'exceltable';
+            var filename = 'Documentos';
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+        }
+
 
         var ids = 0;
-    function onClickModal(id) {
+        var correo = '';
+    function onClickModal(id, correos) {
         ids = id;
+        correo = correos;
+
+
         Swal.fire({
-            title: '¿Desea reenviar este correo?',
-            showDenyButton: true,
-            showCancelButton: false,
-            confirmButtonText: `Aceptar`,
-            denyButtonText: `Cancelar`,
-            customClass: {
-                confirmButton: 'swalBtnColor',
-                denyButton: 'swalDeny'
-            },
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
+            title: "¿Desea reenviar este correo?",
+            input: "text",
+            inputValue: correo,
+                showCancelButton: true,
+                confirmButtonText: "Guardar",
+                cancelButtonText: "Cancelar",
+                inputValidator: nombre => {
+                    // Si el valor es válido, debes regresar undefined. Si no, una cadena
+                    if (!nombre) {
+                        return "Por favor escribe el correo";
+                    } else {
+                        return undefined;
+                    }
+                }
+            })
+            .then(resultado => {
+                if (resultado.value) {
+                    let nombre = resultado.value;
+                    correo = nombre;
+                    Eliminar();
+                }
+            });
 
-                Eliminar();
 
-            }
-        })
+
+        //Swal.fire({
+        //    title: '¿Desea reenviar este correo?',
+        //    showDenyButton: true,
+        //    showCancelButton: false,
+        //    confirmButtonText: `Aceptar`,
+        //    denyButtonText: `Cancelar`,
+        //    customClass: {
+        //        confirmButton: 'swalBtnColor',
+        //        denyButton: 'swalDeny'
+        //    },
+        //}).then((result) => {
+        //    /* Read more about isConfirmed, isDenied below */
+        //    if (result.isConfirmed) {
+
+        //        Eliminar();
+
+        //    }
+        //})
 
     }
         function  Eliminar() {
@@ -56,8 +127,8 @@
          $.ajax({
                         type: 'GET',
                         dataType: 'json',
-                        url: '@Url.Page("Index", "Reenviar")',
-                        data: { id: ids },
+             url: '@Url.Page("Index", "Reenviar")',
+             data: { id: ids, correos: correo },
              success: function (result) {
                  console.log(result);
                              if (result == false) {
@@ -82,7 +153,7 @@
                                      confirmButtonText: 'OK'
                                  }).then((result) => {
                                      if (result.isConfirmed) {
-                                         
+
                                      }
                                  })
                              }
@@ -179,12 +250,33 @@
 
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Moneda:</label>
+                                <div class="form-group row">
+
+                                    <div class="col-sm-10">
+                                        <select asp-for="filtro.Texto" id="idTipo" class="form-control  mi-selector">
+                                            <option value="" selected>-Moneda-</option>
+
+
+
+                                            <option value="COL">Colones</option>
+                                            <option value="USD">Dólares</option>
+
+
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
                             <div class="col-sm-12">
                                 <br />
                             </div>
                             <div class="col-sm-6" style="text-align: right;">
                             </div>
                             <div class="col-sm-6" style="text-align: right;">
+                                <button title="Exportar a Excel" type="button" class="btn btn-success" onclick="javascript: TableExport();">EXCEL</button>
                                 <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
 
                             </div>
@@ -220,6 +312,8 @@
                                         <th>Nombre Cliente</th>
                                         <th>Moneda</th>
                                         <th>Total Comprobante</th>
+                                        <th>Total Impuesto</th>
+
                                         <th>Estado</th>
 
                                         <th>Acción</th>
@@ -268,7 +362,9 @@
 
                                             <td>@item.CardName  </td>
                                             <td>@item.moneda  </td>
-                                            <td>@Math.Round(item.totalcomprobante.Value, 2)  </td>
+                                            <td>@Math.Round(item.totalcomprobante.Value, 2).ToString("N", formato)  </td>
+                                            <td>@Math.Round(item.totalimpuestos.Value, 2).ToString("N", formato)  </td>
+
                                             <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
 
 
@@ -276,7 +372,7 @@
 
                                                 <a asp-page="./Editar" asp-route-id="@item.id" title="Visualizar" class="btn btn-warning"> <i class="fa fa-eye"></i></a>
                                                 &nbsp;
-                                                <a onclick="javascript: onClickModal('@item.id')" title="Reenviar" class="btn btn-primary"><i class="fa fa-send"></i></a>
+                                                <a onclick="javascript: onClickModal('@item.id', '@item.Email')" title="Reenviar" class="btn btn-primary"><i class="fa fa-send"></i></a>
 
 
                                             </td>
@@ -293,3 +389,80 @@
         </div>
     </div>
 </div>
+
+
+<!--EXCEL-->
+<table hidden  id="exceltable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Consecutivo SAP</th>
+            <th>Consecutivo Interno</th>
+            <th>Consecutivo Hacienda</th>
+            <th>Tipo de Documento</th>
+            <th>Fecha</th>
+            <th>Nombre Cliente</th>
+            <th>Moneda</th>
+            <th>Total Comprobante</th>
+            <th>Total Impuesto</th>
+
+            <th>Estado</th>
+
+ 
+
+        </tr>
+    </thead>
+
+
+    <tbody>
+        @foreach (var item in Model.Documentos)
+        {
+            <tr>
+                <td>@item.consecutivoSAP</td>
+                <td>@item.consecutivoInterno</td>
+                <td>@item.ConsecutivoHacienda</td>
+                @switch (item.TipoDocumento)
+                {
+                    case "01":
+                        {
+                            <td>Factura Electronica</td>
+                            break;
+                        }
+                    case "02":
+                        {
+                            <td>Nota de debito</td>
+                            break;
+                        }
+                    case "03":
+                        {
+                            <td>Nota de credito</td>
+                            break;
+                        }
+                    case "04":
+                        {
+                            <td>Tiquete Electronico</td>
+                            break;
+                        }
+                    case "08":
+                        {
+                            <td>Factura Electronica de Compra</td>
+                            break;
+                        }
+                }
+
+                <td>@item.Fecha.Value.ToString("dd/MM/yyyy")  </td>
+
+                <td>@item.CardName  </td>
+                <td>@item.moneda  </td>
+                <td>@Math.Round(item.totalcomprobante.Value, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.totalimpuestos.Value, 2).ToString("N", formato)  </td>
+
+                <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "Error interno": item.RespuestaHacienda )  </td>
+
+
+               
+
+            </tr>
+        }
+
+    </tbody>
+</table>
