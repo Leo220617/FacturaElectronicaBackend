@@ -62,7 +62,7 @@ namespace FacturaElectronica.Pages.Documentos
                 }
 
                 Documentos = await service.ObtenerLista(filtro);
-
+                Documentos = Documentos.Where(a => a.code == 1).ToArray();
 
 
                 return Page();
