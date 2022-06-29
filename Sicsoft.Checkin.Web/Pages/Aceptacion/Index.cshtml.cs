@@ -69,7 +69,7 @@ namespace FacturaElectronica.Pages.Aceptacion
                     DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
 
                     filtro.FechaFinal = ultimoDia;
-
+                    filtro.Estado = "0";
 
 
                 }
