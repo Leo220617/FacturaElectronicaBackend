@@ -20,9 +20,13 @@ namespace FacturaElectronica.Pages.Aceptacion
         private readonly ICrudApi<BandejaEntradaViewModel, int> sBandeja;
         private readonly ICrudApi<RecibidoRoles, int> compras;
         private readonly ICrudApi<ParametrosViewModel, int> service;
+        private readonly ICrudApi<UsuariosViewModel, int> usuarios;
 
         [BindProperty]
         public BandejaEntradaViewModel[] Bandejas { get; set; }
+
+        [BindProperty]
+        public UsuariosViewModel[] Usuarios { get; set; }
 
         [BindProperty]
         public ParametrosViewModel Parametros { get; set; }
@@ -30,11 +34,12 @@ namespace FacturaElectronica.Pages.Aceptacion
         [BindProperty(SupportsGet = true)]
         public ParametrosFiltros filtro { get; set; }
 
-        public IndexModel(ICrudApi<BandejaEntradaViewModel, int> sBandeja, ICrudApi<RecibidoRoles, int> compras, ICrudApi<ParametrosViewModel, int> service)
+        public IndexModel(ICrudApi<BandejaEntradaViewModel, int> sBandeja, ICrudApi<RecibidoRoles, int> compras, ICrudApi<ParametrosViewModel, int> service, ICrudApi<UsuariosViewModel, int> usuarios)
         {
             this.sBandeja = sBandeja;
             this.compras = compras;
             this.service = service;
+            this.usuarios = usuarios;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -70,13 +75,13 @@ namespace FacturaElectronica.Pages.Aceptacion
 
                     filtro.FechaFinal = ultimoDia;
                     filtro.Estado = "0";
-
+                    filtro.Codigo1 = 0;
 
                 }
 
                 Bandejas = await sBandeja.ObtenerLista(filtro);
 
-
+                Usuarios = await usuarios.ObtenerLista("");
 
                 return Page();
             }

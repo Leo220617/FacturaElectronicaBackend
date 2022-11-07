@@ -1,7 +1,7 @@
 ﻿@page
-@model Sicsoft.CostaRica.Checkin.Web.Pages.Account.RegistroUsuarioModel
+@model FacturaElectronica.Pages.Account.CambioContraseñaModel
 @{
-    ViewData["Title"] = "Registro de Usuario";
+    ViewData["Title"] = "Cambio de Contraseña";
 }
 
 
@@ -179,7 +179,6 @@
 
     </script>
 }
-
     <div class="page-title">
         <div class="title_left">
             <h3>Registro de Usuario</h3>
@@ -199,49 +198,30 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <label for="fullname">Nombre:</label>
-                                <input type="text" id="fullname" class="form-control" asp-for="Input.Nombre" required />
+
+
+
+                            <div class="col-md-6">
+                                <label for="clave">Contraseña:</label>
+                                <input class="form-control" asp-for="Input.Clave" id="clave" type="password" onchange="javascript: RevisaContraseña()" placeholder="Contraseña" />
+                                <span style="display:none;" id="ErrorClave" class="text-danger"></span>
                             </div>
-                            <div class="col-md-4">
-                                <label for="email">Email:</label>
-                                <input type="email" id="email" class="form-control" asp-for="Input.Email" required />
+                            <div class="col-md-6">
+                                <label for="email">Confirmar Contraseña:</label>
+                                <input class="form-control" type="password" id="cClave" onchange="javascript: RevisaConfirmacionContraseña()" placeholder="Confirme la contraseña" />
+                                <span style="display:none;" id="ErrorConfirmacionClave" class="text-danger"></span>
                             </div>
-                            <div class="col-md-4">
-                                <label for="rol">Rol:</label>
-                                <select id="heard" class="form-control" asp-for="Input.idRol" required>
-                                    <option value="0">Seleccione</option>
-                                    @foreach (var item in Model.Roles)
-                                {
-                                    <option value="@item.idRol">@item.NombreRol </option>
-                                }
-                            </select>
+
                         </div>
 
+                        <div class="clearfix"></div>
+                        <br />
 
-                        <div class="col-md-6">
-                            <label for="clave">Contraseña:</label>
-                            <input class="form-control" asp-for="Input.Clave" id="clave" type="password" onchange="javascript: RevisaContraseña()" placeholder="Contraseña" />
-                            <span style="display:none;" id="ErrorClave" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email">Confirmar Contraseña:</label>
-                            <input class="form-control" type="password" id="cClave" onchange="javascript: RevisaConfirmacionContraseña()" placeholder="Confirme la contraseña" />
-                            <span style="display:none;" id="ErrorConfirmacionClave" class="text-danger"></span>
-                        </div>
-
-                    </div>
-
-                    <div class="clearfix"></div>
-                    <br />
-
-                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
 
 
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-

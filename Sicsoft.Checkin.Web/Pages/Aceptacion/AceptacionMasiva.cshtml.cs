@@ -46,7 +46,7 @@ namespace FacturaElectronica.Pages.Aceptacion
 
 
                 var Roles1 = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
-                if (string.IsNullOrEmpty(Roles1.Where(a => a == "19").FirstOrDefault()))
+                if (string.IsNullOrEmpty(Roles1.Where(a => a == "20").FirstOrDefault()))
                 {
                     return RedirectToPage("/NoPermiso");
                 }
@@ -133,6 +133,8 @@ namespace FacturaElectronica.Pages.Aceptacion
                     Bandeja.CodigoActividad = acep.AEconomica;
                     Bandeja.impuestoAcreditar = Math.Round(Bandeja.Impuesto);
                     Bandeja.gastoAplicable = Math.Round(Bandeja.TotalComprobante.Value);
+                    Bandeja.idAceptador = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == ClaimTypes.NameIdentifier).Select(s1 => s1.Value).FirstOrDefault());
+
                     var a = await sBandeja.Agregar(Bandeja);
                 }
 

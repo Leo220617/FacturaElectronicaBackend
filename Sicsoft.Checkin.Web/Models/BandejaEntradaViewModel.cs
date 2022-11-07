@@ -65,5 +65,7 @@ namespace FacturaElectronica.Models
 
         public string ClaveReceptor { get; set; }
         public string ConsecutivoReceptor { get; set; }
+        public int idAceptador { get; set; }
+
     }
 }

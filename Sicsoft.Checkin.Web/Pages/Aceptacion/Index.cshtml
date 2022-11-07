@@ -32,7 +32,9 @@
 }
 
 @section scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script type="text/javascript">
         function TableExport() {
             var tableID = 'tablaexcel';
@@ -95,14 +97,18 @@
     </script>
 }
 
-<div class="page-title">
-    <div class="title_left">
-        <h3>Compras Electrónicas</h3>
-    </div>
-     <div class="title_right">
-        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-            <div class="input-group">
-                <a asp-page="AceptacionMasiva" class="btn btn-primary" style="font-size: 12px;" title="Aceptacion Masiva">  Aceptacion Masiva</a>
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Compras Electrónicas</h3>
+        </div>
+        <div class="title_right">
+            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                <div class="input-group">
+                    @if (!string.IsNullOrEmpty(Roles.Where(a => a == "20").FirstOrDefault()))
+                {
+                    <a asp-page="AceptacionMasiva" class="btn btn-primary" style="font-size: 12px;" title="Aceptacion Masiva">  Aceptacion Masiva</a>
+
+                }
             </div>
         </div>
     </div>
@@ -124,15 +130,15 @@
                     <div class="ibox-content">
                         <div class="row">
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label class="col-form-label">Fecha Inicial:</label>
                                 <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial" />
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label class="col-form-label">Fecha Final:</label>
                                 <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="col-form-label">Estado:</label>
                                 <div class="form-group row">
 
@@ -144,7 +150,7 @@
 
                                             <option value="0">Sin Procesar</option>
                                             <option value="1">Procesadas</option>
-                                          
+
 
                                         </select>
                                     </div>
@@ -152,6 +158,29 @@
 
                                 </div>
                             </div>
+
+                            <div class="col-md-3">
+                                <label class="col-form-label">Usuario Aceptador:</label>
+                                <div class="form-group row">
+
+                                    <div class="col-sm-10">
+                                        <select asp-for="filtro.Codigo1" class="form-control  mi-selector">
+                                            <option value="0" selected>-Seleccione-</option>
+
+                                            @foreach (var item in Model.Usuarios)
+                                            {
+                                                <option value="@item.id">@item.id - @item.Nombre</option>
+
+                                            }
+
+
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
                             <div class="col-sm-12">
                                 <br />
                             </div>
@@ -199,6 +228,7 @@
 
                                         <th>Estado Receptor</th>
                                         <th>Estado</th>
+                                        <th>Aceptador</th>
 
                                         <th>Acción</th>
 
@@ -250,6 +280,7 @@
                                             </td>
                                             <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
 
+                                            <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
 
                                             <td>
                                                 @if (item.Procesado != "1")
@@ -302,8 +333,9 @@
 
             <th>Estado Receptor</th>
             <th>Estado</th>
+            <th>Aceptador</th>
 
- 
+
 
         </tr>
     </thead>
@@ -352,9 +384,10 @@
 
                 </td>
                 <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+                <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
 
 
-              
+
 
             </tr>
         }

@@ -75,6 +75,8 @@ namespace FacturaElectronica.Pages.Aceptacion
                             break;
                         }
                 }
+
+                Bandeja.idAceptador = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == ClaimTypes.NameIdentifier).Select(s1 => s1.Value).FirstOrDefault());
                 var a = await service.Agregar(Bandeja);
                 return RedirectToPage("./Index");
             }
