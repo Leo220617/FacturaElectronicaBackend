@@ -33,7 +33,7 @@ namespace Sicsoft.Checkin.Web
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
            .AddCookie(options =>
            {
-               options.ExpireTimeSpan = TimeSpan.FromMinutes(90000);
+               options.ExpireTimeSpan = TimeSpan.FromMinutes(120000);
            });
 
             services.AddHttpContextAccessor();
