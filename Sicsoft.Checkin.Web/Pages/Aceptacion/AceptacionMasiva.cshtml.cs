@@ -95,14 +95,14 @@ namespace FacturaElectronica.Pages.Aceptacion
         }
 
 
-        public async Task<IActionResult> OnPostGenerar(int[] recibidos, AceptacionParametros acep)
+        public async Task<IActionResult> OnPostGenerar(int[] recibidos, AceptacionParametros acep, ParametrosFiltros filtroAcep)
         {
             string error = "";
 
 
             try
             {
-                Bandejas = await sBandeja.ObtenerLista(filtro);
+                Bandejas = await sBandeja.ObtenerLista(filtroAcep);
                 Bandejas = Bandejas.Where(a => a.Procesado != "1").ToArray();
 
                 for (int i = 0; i < recibidos.Length; i++)

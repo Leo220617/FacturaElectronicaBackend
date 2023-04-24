@@ -32,30 +32,30 @@
 }
 
 @section scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script type="text/javascript">
-        $(document).ready(function () {
-            jQuery(document).ready(function ($) {
-                $(document).ready(function () {
-                   
+        $(document).ready(function() {
+            jQuery(document).ready(function($) {
+                $(document).ready(function() {
+
                 });
             });
-            $("input").on('ifChecked', function(event) {   onChangeCheck(event.currentTarget.id) });
+            $("input").on('ifChecked', function(event) { onChangeCheck(event.currentTarget.id) });
             $("input").on('ifUnchecked', function(event) { onChangeCheck(event.currentTarget.id) });
 
-            // $('input').on('ifChecked', function (event) { check() }); 
-           // $('input').on('ifUnchecked', function (event) { check() });
+            // $('input').on('ifChecked', function (event) { check() });
+            // $('input').on('ifUnchecked', function (event) { check() });
 
         });
         var ProdCadena = [];
 
-        function onChangeCheck(i)
-        {
+        function onChangeCheck(i) {
 
             var checkbox1 = document.getElementById(i);
 
-            if(i == "todo")
-            {
+            if (i == "todo") {
                 if (checkbox1.checked == true) {
                     var cantidad = $(".flat").length;
 
@@ -69,7 +69,7 @@
                     }
 
                 } else {
-                     var cantidad = $(".flat").length;
+                    var cantidad = $(".flat").length;
 
                     for (var i = 0; i < cantidad; i++) {
                         $("#" + $(".flat")[i].id).iCheck('uncheck');
@@ -81,12 +81,10 @@
                     }
                 }
 
-            }else 
-            {
-                if(checkbox1.checked == true)
-                {
+            } else {
+                if (checkbox1.checked == true) {
                     ProdCadena.push(parseInt(i));
-                }else{
+                } else {
 
 
                     //$("#todo").iCheck('uncheck');
@@ -96,154 +94,157 @@
                 }
             }
 
-            
+
         }
 
-function Generar() {
+        function Generar() {
 
-    var Acep = {
-        tipo: $("#tipo").val() ,
-        condicionImpuesto: $("#cond").val() ,
-        AEconomica: $("#actividadeconomica").val()
-    }
+            var Acep = {
+                tipo: $("#tipo").val(),
+                condicionImpuesto: $("#cond").val(),
+                AEconomica: $("#actividadeconomica").val()
+            }
+            var FiltroAcep = 
+            {
+                FechaInicial: $("#FecInicial").val(),
+                FechaFinal:  $("#FecFinal").val()
+            }
+            $.ajax({
+                type: 'POST',
 
-    $.ajax({
-                            type: 'POST',
+                url: '@Url.Page("AceptacionMasiva", "Generar")',
+                dataType: 'json',
+                data: { recibidos: ProdCadena, acep: Acep, filtroAcep: FiltroAcep },
+                headers: {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function(json) {
 
-                            url: '@Url.Page("AceptacionMasiva", "Generar")',
-                            dataType: 'json',
-                            data: { recibidos: ProdCadena, acep: Acep },
-                            headers: {
-                                RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    $("#divProcesando").modal("hide");
+
+                    console.log("resultado " + json);
+                    if (json == true) {
+                        Swal.fire({
+                            title: "Ha sido generado con éxito",
+
+                            icon: 'success',
+                            showCancelButton: false,
+
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: 'swalBtnColor',
+
                             },
-                            success: function (json) {
-
-                                $("#divProcesando").modal("hide");
-                                 
-                                console.log("resultado " + json);
-                                if (json == true) {
-                                    Swal.fire({
-                                        title: "Ha sido generado con éxito",
-
-                                        icon: 'success',
-                                        showCancelButton: false,
-
-                                        confirmButtonText: 'OK',
-                                        customClass: {
-                                            confirmButton: 'swalBtnColor',
-
-                                        },
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.reload();
-                                        }
-                                    })
-
-                                } else { 
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'Ha ocurrido un error al intentar guardar ' + json
-
-                                    })
-                                }
-                            },
-
-                            beforeSend: function (xhr) {
-
-                        $("#divProcesando").modal("show");
-                                
-                            },
-                            complete: function () {
-                               
-                            },
-                            error: function (error) {
-                                button.disabled = false;
-                                
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
                             }
-                        });
-}
+                        })
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error al intentar guardar ' + json
+
+                        })
+                    }
+                },
+
+                beforeSend: function(xhr) {
+
+                    $("#divProcesando").modal("show");
+
+                },
+                complete: function() {
+
+                },
+                error: function(error) {
+                    button.disabled = false;
+
+                }
+            });
+        }
 
 
     </script>
 }
-<div class="page-title">
-     <div class="title_left">       
-         <h3>Compras Electrónicas - Aceptación Masiva</h3>
-
-    </div>
-
-
-</div>
-<div class="clearfix"></div>
-
-
-
-<div class="row">
-    <div class="col-md-12 col-sm-12  ">
-
-        <div class="x_panel">
-            <div class="x_title">
-                Filtros:
-            </div>
-            <div class="x_content">
-                <form method="get">
-                    <div class="ibox-content">
-                        <div class="row">
-
-                            <div class="col-sm-4">
-                                <label class="col-form-label">Fecha Inicial:</label>
-                                <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="col-form-label">Fecha Final:</label>
-                                <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal" />
-                            </div>
-                            <div class="col-md-4">
-
-                            </div>
-                            <div class="col-sm-12">
-                                <br />
-                            </div>
-
-                            <div class="col-sm-6" style="text-align: right;">
-                            </div>
-                            <div class="col-sm-6" style="text-align: right;">
-                                
-
-                                <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
-
-                            </div>
-
-
-
-
-
-
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Compras Electrónicas - Aceptación Masiva</h3>
 
         </div>
 
-        <div class="x_panel">
-            <div class="x_content">
-                <div class="row">
-                    <div class="col-lg-3">
-                         <label class="col-form-label">Tipo:</label> 
-                                <select id="tipo" class="form-control"  required  >
-                                        <option value="0">Seleccione</option>
 
-                                        <option value="05"> Aceptación Completa </option>
-                                        <option value="06"> Aceptación Parcial </option>
-                                        <option value="07"> Rechazo Completo </option>
-                                 </select>
-                    </div>
+    </div>
+    <div class="clearfix"></div>
 
-                    <div class="col-lg-3"> 
-                         <label class="col-form-label">Condición Impuesto:</label> 
-                        <select id="cond" class="form-control"   required>
+
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12  ">
+
+            <div class="x_panel">
+                <div class="x_title">
+                    Filtros:
+                </div>
+                <div class="x_content">
+                    <form method="get">
+                        <div class="ibox-content">
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <label class="col-form-label">Fecha Inicial:</label>
+                                    <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="col-form-label">Fecha Final:</label>
+                                    <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal" />
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-sm-12">
+                                    <br />
+                                </div>
+
+                                <div class="col-sm-6" style="text-align: right;">
+                                </div>
+                                <div class="col-sm-6" style="text-align: right;">
+
+
+                                    <button title="Buscar" type="submit" class="btn btn btn-primary"> <i class="fa fa-search"></i></button>
+
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label class="col-form-label">Tipo:</label>
+                            <select id="tipo" class="form-control" required>
+                                <option value="0">Seleccione</option>
+
+                                <option value="05"> Aceptación Completa </option>
+                                <option value="06"> Aceptación Parcial </option>
+                                <option value="07"> Rechazo Completo </option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <label class="col-form-label">Condición Impuesto:</label>
+                            <select id="cond" class="form-control" required>
                                 <option value="0">Seleccione</option>
 
                                 <option value="01"> Genera Crédito IVA </option>
@@ -252,61 +253,61 @@ function Generar() {
                                 <option value="04"> Gasto corriente no genera crédito </option>
                                 <option value="05"> Proporcionalidad </option>
                             </select>
-                    </div>
+                        </div>
 
-                    <div class="col-lg-3">
-                         <label class="col-form-label">Actividad Economica:</label> 
+                        <div class="col-lg-3">
+                            <label class="col-form-label">Actividad Economica:</label>
                             <input type="text" id="actividadeconomica" class="form-control" required asp-for="Sucursal" />
 
+                        </div>
+
+                        <div class="col-lg-3">
+
+                            <label class="col-form-label">Seleccionar todo:</label>
+                            <div class="form-check">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="todo" class=" flat ">
+                                    </label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
                     </div>
-                     
-                    <div class="col-lg-3">
-
-                         <label class="col-form-label">Seleccionar todo:</label> 
-                          <div class="form-check">
-                                                            <div class="checkbox"   >
-                                                                <label>
-                                                                    <input type="checkbox" id="todo"  class=" flat ">
-                                                                </label>
-                                                            </div>
-
-                                                        </div>
-
-                         
-                    </div>
-
                 </div>
             </div>
-        </div>
 
 
-        <div class="x_panel">
+            <div class="x_panel">
 
-            <div class="x_content">
-                <div class="row">
-                    <div class="col-sm-12">
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
 
-                        <div class="card-box table-responsive">
-                            <table   class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
+                            <div class="card-box table-responsive">
+                                <table class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
 
-                                        <th>Consecutivo Hacienda</th>
-                                        <th>Cédula</th>
-                                        <th>Nombre Emisor</th>
-                                        <th>Fecha</th>
-                                        <th>Moneda</th>
-                                        <th>Total Comprobante</th>
-                                        <th>Total Impuestos</th>
-                                        <th>Acción</th>
+                                            <th>Consecutivo Hacienda</th>
+                                            <th>Cédula</th>
+                                            <th>Nombre Emisor</th>
+                                            <th>Fecha</th>
+                                            <th>Moneda</th>
+                                            <th>Total Comprobante</th>
+                                            <th>Total Impuestos</th>
+                                            <th>Acción</th>
 
-                                    </tr>
-                                </thead>
+                                        </tr>
+                                    </thead>
 
 
-                                <tbody>
-                                   
-                                    @foreach (var item in Model.Bandejas.Where(a => a.XmlConfirmacion != null).ToList())
+                                    <tbody>
+
+                                        @foreach (var item in Model.Bandejas.Where(a => a.XmlConfirmacion != null).ToList())
                                     {
                                         <tr>
                                             <td>@item.NumeroConsecutivo</td>
@@ -321,24 +322,24 @@ function Generar() {
                                             <td>@Math.Round(item.TotalComprobante.Value, 2).ToString("N", formato)  </td>
                                             <td>@Math.Round(item.Impuesto, 2).ToString("N", formato)  </td>
 
-                                           
+
 
                                             <td>
-                                                
-                                                        <div class="form-check">
-                                                            <div class="checkbox"   >
-                                                                <label>
-                                                                    <input type="checkbox" id="@item.Id"   class="flat">
-                                                                </label>
-                                                            </div>
 
-                                                        </div>
+                                                <div class="form-check">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" id="@item.Id" class="flat">
+                                                        </label>
+                                                    </div>
+
+                                                </div>
 
                                             </td>
 
                                         </tr>
                                     }
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -348,9 +349,9 @@ function Generar() {
         </div>
     </div>
 
-     <div class="clearfix"></div>
-                    <br />
+    <div class="clearfix"></div>
+    <br />
 
-                    <button type="button" id="Guardar" onclick="Generar()" class="btn btn-success">Guardar Cambios</button>
+    <button type="button" id="Guardar" onclick="Generar()" class="btn btn-success">Guardar Cambios</button>
 
 </div>
