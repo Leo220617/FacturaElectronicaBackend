@@ -18,16 +18,20 @@ namespace FacturaElectronica.Pages.Documentos
     {
         private readonly IConfiguration configuration;
         private readonly ICrudApi<EncDocumentosViewModel, int> service;
+        private readonly ICrudApi<DetDocumentoViewModel, int> serviceD;
+
 
         [BindProperty]
         public EncDocumentosViewModel[] Documentos { get; set; }
-
+        [BindProperty]
+        public List<DetDocumentoViewModel> Det { get; set; }
         [BindProperty(SupportsGet = true)]
         public ParametrosFiltros filtro { get; set; }
 
-        public IndexModel(ICrudApi<EncDocumentosViewModel, int> service)
+        public IndexModel(ICrudApi<EncDocumentosViewModel, int> service, ICrudApi<DetDocumentoViewModel, int> serviceD)
         {
             this.service = service;
+            this.serviceD = serviceD;
         }
         public async Task<IActionResult> OnGetAsync()
         {
@@ -45,7 +49,7 @@ namespace FacturaElectronica.Pages.Documentos
                 {
 
 
-                    filtro.FechaInicial = DateTime.Now;
+                    filtro.FechaInicial = DateTime.Now.AddDays(-1);
 
                     //filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
 
@@ -65,6 +69,17 @@ namespace FacturaElectronica.Pages.Documentos
                 Documentos = Documentos.Where(a => a.code == 1).ToArray();
 
 
+                //Det = new List<DetDocumentoViewModel>();
+                //foreach(var item in Documentos)
+                //{
+                //    var Deta = await serviceD.ObtenerDetalles(item.id);
+
+                //    foreach(var item2 in Deta)
+                //    {
+                //        Det.Add(item2);
+                //    }
+                //}
+
                 return Page();
             }
             catch (ApiException ex)
@@ -77,12 +92,12 @@ namespace FacturaElectronica.Pages.Documentos
         }
 
 
-        public async Task<IActionResult> OnGetReenviar(int id, string correos)
+        public async Task<IActionResult> OnGetReenviar(int id, string sucursal,string correos)
         {
             try
             {
 
-                await service.ReenvioFacturas(id,"001",correos);
+                await service.ReenvioFacturas(id,sucursal,correos);
                 return new JsonResult(true);
             }
             catch (Exception ex)
