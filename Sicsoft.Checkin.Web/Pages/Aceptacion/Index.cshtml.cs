@@ -74,7 +74,7 @@ namespace FacturaElectronica.Pages.Aceptacion
 
                     //DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
 
-                    DateTime ultimoDia = primerDia.AddDays(7);
+                    DateTime ultimoDia = primerDia.AddDays(2);
                     filtro.FechaFinal = ultimoDia;
                     filtro.Estado = "0";
                     filtro.Codigo1 = 0;
