@@ -219,14 +219,16 @@
                                     <tr>
 
                                         <th>Consecutivo Hacienda</th>
-                                        <th>Cédula</th>
-                                        <th>Nombre Emisor</th>
+                                       
+                                        <th>Emisor</th>
                                         <th>Fecha</th>
                                         <th>Moneda</th>
                                         <th>Total Comprobante</th>
                                         <th>Total Impuestos</th>
 
                                         <th>Estado Receptor</th>
+                                        <th>Detalle</th>
+
                                         <th>Estado</th>
                                         <th>Aceptador</th>
 
@@ -241,8 +243,7 @@
                                     {
                                         <tr>
                                             <td>@item.NumeroConsecutivo</td>
-                                            <td>@item.IdEmisor</td>
-                                            <td>@item.NombreEmisor</td>
+                                            <td>@item.IdEmisor - @item.NombreEmisor</td>
 
 
                                             <td> @((item.FechaIngreso).ToString("dd/MM/yyyy"))  </td>
@@ -278,6 +279,8 @@
                                                 }
 
                                             </td>
+                                            <td>@(item.DetalleMensaje == null ? "" : item.DetalleMensaje)</td>
+
                                             <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
 
                                             <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
@@ -332,6 +335,8 @@
             <th>Total Impuestos</th>
 
             <th>Estado Receptor</th>
+            <th>Detalle</th>
+
             <th>Estado</th>
             <th>Aceptador</th>
 
@@ -345,7 +350,7 @@
         @foreach (var item in Model.Bandejas)
         {
             <tr>
-                <td>@item.NumeroConsecutivo.ToString() </td>
+                <td>'@item.NumeroConsecutivo.ToString() </td>
                 <td>@item.IdEmisor</td>
                 <td>@item.NombreEmisor</td>
 
@@ -383,6 +388,8 @@
                     }
 
                 </td>
+                <td>@(item.DetalleMensaje == null ? "" : item.DetalleMensaje)</td>
+
                 <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
                 <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
 
