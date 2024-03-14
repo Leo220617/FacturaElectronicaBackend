@@ -51,15 +51,7 @@ namespace FacturaElectronica.Pages.Documentos
 
                     filtro.FechaInicial = DateTime.Now.AddDays(-1);
 
-                    //filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
-
-
-                    //DateTime primerDia = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
-
-
-                    //DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
-
-                    //filtro.FechaFinal = ultimoDia;
+                    
                     filtro.FechaFinal = filtro.FechaInicial.AddDays(2);
 
 
@@ -69,16 +61,7 @@ namespace FacturaElectronica.Pages.Documentos
                 Documentos = Documentos.Where(a => a.code == 1).ToArray();
 
 
-                //Det = new List<DetDocumentoViewModel>();
-                //foreach(var item in Documentos)
-                //{
-                //    var Deta = await serviceD.ObtenerDetalles(item.id);
-
-                //    foreach(var item2 in Deta)
-                //    {
-                //        Det.Add(item2);
-                //    }
-                //}
+                
 
                 return Page();
             }

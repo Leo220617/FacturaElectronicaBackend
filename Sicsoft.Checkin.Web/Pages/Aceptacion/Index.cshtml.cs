@@ -62,23 +62,20 @@ namespace FacturaElectronica.Pages.Aceptacion
                 if (time == filtro.FechaInicial)
                 {
 
-                    await compras.RealizarLecturaEmails(); // 
+                    //
+                   // await compras.RealizarLecturaEmails(); // 
                     filtro.FechaInicial = DateTime.Now;
 
                     filtro.FechaInicial = filtro.FechaInicial.AddDays(-((filtro.FechaInicial.DayOfWeek - System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek + 7) % 7)).Date;
-                    //filtro.FechaInicial = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
-
-
-                    //DateTime primerDia = new DateTime(filtro.FechaInicial.Year, filtro.FechaInicial.Month, 1);
+                    
                     DateTime primerDia = filtro.FechaInicial;
-
-                    //DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
+ 
 
                     DateTime ultimoDia = primerDia.AddDays(2);
                     filtro.FechaFinal = ultimoDia;
                     filtro.Estado = "0";
                     filtro.Codigo1 = 0;
-
+                    filtro.CodMoneda = "CRC";
                 }
 
                 Bandejas = await sBandeja.ObtenerLista(filtro); //aqui por el rango de fechas por eso se cuelga
