@@ -66,12 +66,12 @@ namespace FacturaElectronica.Pages.Aceptacion
                    // await compras.RealizarLecturaEmails(); // 
                     filtro.FechaInicial = DateTime.Now;
 
-                    filtro.FechaInicial = filtro.FechaInicial.AddDays(-((filtro.FechaInicial.DayOfWeek - System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek + 7) % 7)).Date;
+                    //filtro.FechaInicial = filtro.FechaInicial.AddDays(-((filtro.FechaInicial.DayOfWeek - System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek + 7) % 7)).Date;
                     
                     DateTime primerDia = filtro.FechaInicial;
- 
 
-                    DateTime ultimoDia = primerDia.AddDays(2);
+
+                    DateTime ultimoDia = primerDia;//.AddDays(2);
                     filtro.FechaFinal = ultimoDia;
                     filtro.Estado = "0";
                     filtro.Codigo1 = 0;
