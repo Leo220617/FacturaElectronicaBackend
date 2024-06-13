@@ -66,6 +66,14 @@ namespace FacturaElectronica.Models
         public string ClaveReceptor { get; set; }
         public string ConsecutivoReceptor { get; set; }
         public int idAceptador { get; set; }
+        public decimal IVA1 { get; set; }
 
+        public decimal IVA2 { get; set; }
+
+        public decimal IVA4 { get; set; }
+
+        public decimal IVA8 { get; set; }
+
+        public decimal IVA13 { get; set; }
     }
 }

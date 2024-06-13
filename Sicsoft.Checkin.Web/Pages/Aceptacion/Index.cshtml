@@ -31,7 +31,7 @@
     var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
 }
 
-@section scripts{
+@section scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -97,14 +97,14 @@
     </script>
 }
 
-    <div class="page-title">
-        <div class="title_left">
-            <h3>Compras Electrónicas</h3>
-        </div>
-        <div class="title_right">
-            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                <div class="input-group">
-                    @if (!string.IsNullOrEmpty(Roles.Where(a => a == "20").FirstOrDefault()))
+<div class="page-title">
+    <div class="title_left">
+        <h3>Compras Electrónicas</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+            <div class="input-group">
+                @if (!string.IsNullOrEmpty(Roles.Where(a => a == "20").FirstOrDefault()))
                 {
                     <a asp-page="AceptacionMasiva" class="btn btn-primary" style="font-size: 12px;" title="Aceptacion Masiva">  Aceptacion Masiva</a>
 
@@ -189,7 +189,7 @@
                                 <div class="form-group row">
 
                                     <div class="col-sm-10">
-                                        <select asp-for="filtro.CodMoneda" id="idTipo" class="form-control  mi-selector"> 
+                                        <select asp-for="filtro.CodMoneda" id="idTipo" class="form-control  mi-selector">
                                             <option value="CRC">CRC</option>
                                             <option value="USD">USD</option>
 
@@ -237,7 +237,7 @@
                                     <tr>
 
                                         <th>Consecutivo Hacienda</th>
-                                       
+
                                         <th>Emisor</th>
                                         <th>Fecha</th>
                                         <th>Moneda</th>
@@ -299,7 +299,7 @@
                                             </td>
                                             <td>@(item.DetalleMensaje == null ? "" : item.DetalleMensaje)</td>
 
-                                            <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+                                            <td>@(string.IsNullOrEmpty(item.RespuestaHacienda) ? "" : item.RespuestaHacienda == "1" ? "Procesado" : item.RespuestaHacienda)  </td>
 
                                             <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
 
@@ -336,6 +336,71 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-6">
+                <div class="x_panel">
+
+                    <div class="x_content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card-box table-responsive">
+                                    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Descripción</th>
+                                                <th>Total</th>
+
+
+
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+
+
+                                            <tr>
+                                                <td>Impuesto I.V.A 1</td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.IVA1)).ToString("N",formato)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Impuesto I.V.A 2</td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.IVA2)).ToString("N", formato)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Impuesto I.V.A 4</td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.IVA4)).ToString("N", formato)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Impuesto I.V.A 8</td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.IVA8)).ToString("N", formato)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Impuesto I.V.A 13</td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.IVA13)).ToString("N", formato)</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><b>Total Impuestos</b></td>
+                                                <td>@Math.Round(Model.Bandejas.Where(a => a.XmlConfirmacion != null).Sum(a => a.Impuesto)).ToString("N", formato)</td>
+                                            </tr>
+
+
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!--Excel-->
@@ -350,6 +415,12 @@
             <th>Fecha</th>
             <th>Moneda</th>
             <th>Total Comprobante</th>
+            <th>I.V.A 1</th>
+            <th>I.V.A 2</th>
+            <th>I.V.A 4</th>
+            <th>I.V.A 8</th>
+            <th>I.V.A 13</th>
+
             <th>Total Impuestos</th>
 
             <th>Estado Receptor</th>
@@ -378,6 +449,12 @@
                 <td>@item.CodigoMoneda  </td>
 
                 <td>@Math.Round(item.TotalComprobante.Value, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.IVA1, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.IVA2, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.IVA4, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.IVA8, 2).ToString("N", formato)  </td>
+                <td>@Math.Round(item.IVA13, 2).ToString("N", formato)  </td>
+
                 <td>@Math.Round(item.Impuesto, 2).ToString("N", formato)  </td>
 
                 <td>
@@ -408,7 +485,7 @@
                 </td>
                 <td>@(item.DetalleMensaje == null ? "" : item.DetalleMensaje)</td>
 
-                <td>@(  string.IsNullOrEmpty(item.RespuestaHacienda) ? "": item.RespuestaHacienda == "1"? "Procesado":  item.RespuestaHacienda )  </td>
+                <td>@(string.IsNullOrEmpty(item.RespuestaHacienda) ? "" : item.RespuestaHacienda == "1" ? "Procesado" : item.RespuestaHacienda)  </td>
                 <td>@(Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault() == null ? "" : Model.Usuarios.Where(a => a.id == item.idAceptador).FirstOrDefault().Nombre) </td>
 
 
