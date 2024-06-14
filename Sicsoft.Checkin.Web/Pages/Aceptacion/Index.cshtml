@@ -440,7 +440,15 @@
         {
             <tr>
                 <td>'@item.NumeroConsecutivo.ToString() </td>
-                <td>@item.IdEmisor</td>
+                @if(@item.IdEmisor.Length > 10)
+                {
+                    <td> '@item.IdEmisor</td>
+
+                }else
+                {
+                    <td> @item.IdEmisor</td>
+
+                }
                 <td>@item.NombreEmisor</td>
 
 
