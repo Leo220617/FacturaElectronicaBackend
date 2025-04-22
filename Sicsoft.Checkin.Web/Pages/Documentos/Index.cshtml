@@ -39,36 +39,71 @@
     <script>
         function TableExport() {
             var tableID = 'exceltable';
-            var filename = 'Documentos';
-            var downloadLink;
-            var dataType = 'application/vnd.ms-excel';
+            var filename = 'Documentos.csv';
             var tableSelect = document.getElementById(tableID);
-            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+            var rows = tableSelect.querySelectorAll("tr");
+            var csvContent = "";
 
-            // Specify file name
-            filename = filename ? filename + '.xls' : 'excel_data.xls';
+            // Recorrer las filas de la tabla
+            rows.forEach((row) => {
+                var cells = row.querySelectorAll("th, td");
+                var rowContent = [];
 
-            // Create download link element
-            downloadLink = document.createElement("a");
-
-            document.body.appendChild(downloadLink);
-
-            if (navigator.msSaveOrOpenBlob) {
-                var blob = new Blob(['ufeff', tableHTML], {
-                    type: dataType
+                // Recorrer las celdas de cada fila
+                cells.forEach((cell) => {
+                    // Escapar comillas dobles y eliminar caracteres especiales
+                    var cellText = cell.innerText.replace(/"/g, '""');
+                    rowContent.push(`"${cellText}"`); // Envolver cada valor en comillas dobles
                 });
-                navigator.msSaveOrOpenBlob(blob, filename);
-            } else {
-                // Create a link to the file
-                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
 
-                // Setting the file name
-                downloadLink.download = filename;
+                // Unir los valores de cada fila con punto y coma
+                csvContent += rowContent.join(";") + "\n";
+            });
 
-                //triggering the function
-                downloadLink.click();
-            }
+            // Crear el archivo blob y el enlace de descarga
+            var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            var downloadLink = document.createElement("a");
+            var url = URL.createObjectURL(blob);
+            downloadLink.href = url;
+            downloadLink.download = filename;
+
+            // Disparar la descarga
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
+        // function TableExport() {
+        //     var tableID = 'exceltable';
+        //     var filename = 'Documentos';
+        //     var downloadLink;
+        //     var dataType = 'application/vnd.ms-excel';
+        //     var tableSelect = document.getElementById(tableID);
+        //     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+        //     // Specify file name
+        //     filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+        //     // Create download link element
+        //     downloadLink = document.createElement("a");
+
+        //     document.body.appendChild(downloadLink);
+
+        //     if (navigator.msSaveOrOpenBlob) {
+        //         var blob = new Blob(['ufeff', tableHTML], {
+        //             type: dataType
+        //         });
+        //         navigator.msSaveOrOpenBlob(blob, filename);
+        //     } else {
+        //         // Create a link to the file
+        //         downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+        //         // Setting the file name
+        //         downloadLink.download = filename;
+
+        //         //triggering the function
+        //         downloadLink.click();
+        //     }
+        // }
 
 
         var ids = 0;
@@ -227,6 +262,7 @@
                                             <option value="03">Nota de Crédito</option>
                                             <option value="04">Tiquete Electrónico</option>
                                             <option value="08">Factura de Compra</option>
+                                            <option value="09">Factura de Exportacion</option>
 
                                         </select>
                                     </div>

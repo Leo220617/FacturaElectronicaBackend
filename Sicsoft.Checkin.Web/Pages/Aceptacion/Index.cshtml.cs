@@ -76,6 +76,7 @@ namespace FacturaElectronica.Pages.Aceptacion
                     filtro.Estado = "0";
                     filtro.Codigo1 = 0;
                     filtro.CodMoneda = "CRC";
+                    filtro.Texto = "";
                 }
 
                 Bandejas = await sBandeja.ObtenerLista(filtro); //aqui por el rango de fechas por eso se cuelga
